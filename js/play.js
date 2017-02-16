@@ -1,52 +1,27 @@
-// lets create our first state
-
-var mainState = {
-  // object with functions needed for state
-  preload: function() {
-    game.load.image('coin', 'assets/coin.png');
-    game.load.image('enemy', 'assets/enemy.png');
-    game.load.image('bg', 'assets/background.png');
-    game.load.image('jumpBtn', 'assets/jumpButton.png');
-    game.load.image('leftBtn', 'assets/leftButton.png');
-    game.load.image('muteBtn', 'assets/muteButton.png');
-    game.load.image('pixel', 'assets/pixel.png');
-    game.load.image('player', 'assets/player.png');
-    game.load.spritesheet('player2', 'assets/player2.png', 20, 20);
-    game.load.image('rightBtn', 'assets/rightButton.png');
-    game.load.image('tileset', 'assets/tileset.png');
-    game.load.image('wallH', 'assets/wallHorizontal.png');
-    game.load.image('wallV', 'assets/wallVertical.png');
-    
-    // load audio
-    game.load.audio('coinsfx', 'assets/coin.mp3');
-    game.load.audio('coinsfxogg', 'assets/coin.ogg');
-    game.load.audio('deadsfx', 'assets/dead.mp3');
-    game.load.audio('deadsfxogg', 'assets/dead.ogg');
-    game.load.audio('jumpsfx', 'assets/jump.mp3');
-    game.load.audio('jumpsfxogg', 'assets/jump.ogg');
-  },
-  
-  // function if called after preload function
-  // game, display, sprites etc
+var playState = {
   create: function() {
-
-    
     this.cursor = game.input.keyboard.createCursorKeys();
     
-    this.player = game.add.sprite(340, game.world.centerY, 'player');
-    
+    this.player = game.add.sprite(340, game.world.centerY, 'player2');
     game.physics.arcade.enable(this.player);
+    this.player.anchor.setTo(0.5, 0.5);
+    this.player.body.gravity.y = 270;
     this.player.body.bounce.y = 0.2;
-    this.player.body.gravity.y = 300;
-    this.player.body.collideWorldBounds = false;
+    this.player.animations.add('right', [1, 2], 8, true);
+    this.player.animations.add('left', [3, 4], 8, true);
+    
+    this.enemies = game.add.group();
+    this.enemies.enableBody = true;
+    this.enemies.createMultiple(10, 'enemy');
     
     this.coin = game.add.sprite(80, 120, 'coin');
     game.physics.arcade.enable(this.coin);
-    
-    this.scoreLabel = game.add.text(30, 30, 'Score: 0', { font: '16px Arial', fill: '#ffffff' });
-    this.score = 0;
+    this.coin.anchor.setTo(0.5, 0.5);
 
-    // set properties for platforms group
+    this.scoreLabel = game.add.text(30, 30, 'Score: 0', { font: '16px Arial', fill: '#ffffff' });
+    game.global.score = 0;
+    
+        // set properties for platforms group
     this.platforms = game.add.group();
 
     this.platforms.enableBody = true;
@@ -64,22 +39,22 @@ var mainState = {
     
     this.platforms.setAll('body.immovable', true);
     
-    //add enemies
+    
+    this.createWorld();
+    
+        //add enemies
     this.enemies = game.add.group();
     this.enemies.enableBody = true;
     game.physics.arcade.enable(this.enemies);
-    
     this.enemies.createMultiple(10, 'enemy');
     
     this.time.events.loop(3500, this.addEnemy, this);
     
-    // add sfx
     jumpsfx = game.add.audio('jumpsfx');
     coinsfx = game.add.audio('coinsfx');
     deathsfx = game.add.audio('deadsfx');
-
   },
-  
+    
   update: function() {
     // is valled 60 times per second
     // contains logic
@@ -99,8 +74,10 @@ var mainState = {
   movePlayer: function() {
     if(this.cursor.left.isDown) {
       this.player.body.velocity.x = -200;
+      this.player.animations.play('left');
     } else if(this.cursor.right.isDown) {
       this.player.body.velocity.x = 200;
+      this.player.animations.play('right');
     } else {
       this.player.body.velocity.x = 0;
     }
@@ -132,11 +109,10 @@ var mainState = {
   takeCoin: function(coin, player) {
     
     this.coin.kill();
-    this.score += 1;
-    this.scoreLabel.text = 'Score: ' + this.score;
+    game.global.score += 1;
+    this.scoreLabel.text = 'Score: ' + game.global.score;
     coinsfx.play();
     this.updateCoinPosition();
-    console.log(this.score);
   },
   
 
@@ -162,14 +138,7 @@ var mainState = {
   },
   
   playerDie: function() {
-    game.state.start('main');
+    game.state.start('menu');
     deathsfx.play();
   }
 };
-
-// initialize app
-var game = new Phaser.Game(500, 340, Phaser.AUTO, 'gamediv');
-
-// engine add and start main state
-game.state.add('main', mainState);
-game.state.start('main');
