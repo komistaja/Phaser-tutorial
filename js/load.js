@@ -12,12 +12,11 @@ var loadState = {
     game.load.image('bg', 'assets/background.png');
     game.load.image('jumpBtn', 'assets/jumpButton.png');
     game.load.image('leftBtn', 'assets/leftButton.png');
-    game.load.image('muteBtn', 'assets/muteButton.png');
+    game.load.spritesheet('muteBtn', 'assets/muteButton.png', 28, 22);
     game.load.image('pixel', 'assets/pixel.png');
     game.load.image('player', 'assets/player.png');
     game.load.spritesheet('player2', 'assets/player2.png', 20, 20);
     game.load.image('rightBtn', 'assets/rightButton.png');
-    game.load.image('tileset', 'assets/tileset.png');
     game.load.image('wallH', 'assets/wallHorizontal.png');
     game.load.image('wallV', 'assets/wallVertical.png');
     
@@ -27,6 +26,9 @@ var loadState = {
     game.load.audio('deadsfxogg', 'assets/dead.ogg');
     game.load.audio('jumpsfx', 'assets/jump.mp3');
     game.load.audio('jumpsfxogg', 'assets/jump.ogg');
+    
+    game.load.image('tileset', 'assets/tileset.png');
+    game.load.tilemap('map', 'assets/map.json', null, Phaser.Tilemap.TILED_JSON);
   },
   
   create: function() {

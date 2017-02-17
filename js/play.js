@@ -1,7 +1,7 @@
 var playState = {
   create: function() {
     this.cursor = game.input.keyboard.createCursorKeys();
-    
+
     this.player = game.add.sprite(340, game.world.centerY, 'player2');
     game.physics.arcade.enable(this.player);
     this.player.anchor.setTo(0.5, 0.5);
@@ -13,6 +13,8 @@ var playState = {
     this.enemies = game.add.group();
     this.enemies.enableBody = true;
     this.enemies.createMultiple(10, 'enemy');
+
+    this.createWorld();
     
     this.coin = game.add.sprite(80, 120, 'coin');
     game.physics.arcade.enable(this.coin);
@@ -21,50 +23,43 @@ var playState = {
     this.scoreLabel = game.add.text(30, 30, 'Score: 0', { font: '16px Arial', fill: '#ffffff' });
     game.global.score = 0;
     
-        // set properties for platforms group
-    this.platforms = game.add.group();
-
-    this.platforms.enableBody = true;
-    
-    // create parts in platforms group
-    this.ledge = this.platforms.create(280, 320, 'wallH');
-    this.ledge = this.platforms.create(20, 320, 'wallH');
-    this.ledge = this.platforms.create(150, 120, 'wallH');
-    this.legde = this.platforms.create(280, 0, 'wallH');
-    this.legde = this.platforms.create(20, 0, 'wallH');
-    this.legde = this.platforms.create(80, 220, 'wallH');
-    this.legde = this.platforms.create(220, 220, 'wallH');
-    this.legde = this.platforms.create(480, 0, 'wallV');
-    this.legde = this.platforms.create(0, 0, 'wallV');
-    
-    this.platforms.setAll('body.immovable', true);
-    
-    
-    this.createWorld();
-    
         //add enemies
     this.enemies = game.add.group();
     this.enemies.enableBody = true;
     game.physics.arcade.enable(this.enemies);
     this.enemies.createMultiple(10, 'enemy');
     
-    this.time.events.loop(3500, this.addEnemy, this);
+    this.nextEnemy = 0;
     
     jumpsfx = game.add.audio('jumpsfx');
     coinsfx = game.add.audio('coinsfx');
     deathsfx = game.add.audio('deadsfx');
+    
+    //add emitter with 15 particles and set image to 'pixel', speeds to 150 and gravity 0
+    this.emitter = game.add.emitter(0, 0, 15);
+    this.emitter.makeParticles('pixel');
+    this.emitter.setYSpeed(-150, 150);
+    this.emitter.setXSpeed(-150, 150);
+    this.emitter.gravity = 0;
   },
     
   update: function() {
     // is valled 60 times per second
     // contains logic
-    var collidePlatform = this.physics.arcade.collide(this.player, this.platforms);
-    var collidePlatform = this.physics.arcade.collide(this.enemies, this.platforms);
+    game.physics.arcade.collide(this.player, this.layer);
+    game.physics.arcade.collide(this.enemies, this.layer);
     this.movePlayer();
     
     if(!this.player.inWorld) {
       this.playerDie();
-      deathsfx.play();
+    }
+    
+    if(this.nextEnemy < game.time.now) {
+      var start = 3000, end = 1000, score = 100;
+      var delay = Math.max(start - (start-end)*game.global.score/score, end);
+      
+      this.addEnemy();
+      this.nextEnemy = game.time.now + delay;
     }
     
     game.physics.arcade.overlap(this.coin, this.player, this.takeCoin, null, this);
@@ -81,7 +76,7 @@ var playState = {
     } else {
       this.player.body.velocity.x = 0;
     }
-    if(this.cursor.up.isDown && this.player.body.touching.down) {
+    if(this.cursor.up.isDown && this.player.body.onFloor()) {
       this.player.body.velocity.y = -250;
       jumpsfx.play();
     }
@@ -108,6 +103,7 @@ var playState = {
   
   takeCoin: function(coin, player) {
     
+    game.add.tween(this.player.scale).to({x: 1.3, y: 1.3}, 50).to({x: 1, y: 1}, 150).start();
     this.coin.kill();
     game.global.score += 1;
     this.scoreLabel.text = 'Score: ' + game.global.score;
@@ -134,11 +130,36 @@ var playState = {
   },
   
   createWorld: function() {
-    
+    // create the tilemap
+    this.map = game.add.tilemap('map');
+    this.map.addTilesetImage('tileset');
+    this.layer = this.map.createLayer('Tile Layer 1');
+    this.layer.resizeWorld();
+    this.map.setCollision(3);
   },
   
   playerDie: function() {
-    game.state.start('menu');
+    if(!this.player.alive) {
+      return;
+    }
     deathsfx.play();
+    this.player.kill();
+    
+    if(game.global.score > localStorage.getItem('highscore')) {
+      localStorage.setItem('highsore', game.global.score);
+    }
+    
+    //set emitter to player position and start it with 600ms lifetime
+    this.emitter.x = this.player.x;
+    this.emitter.y = this.player.y;
+    this.emitter.start(true, 600, null, 15);
+    
+
+    game.time.events.add(1000, this.startMenu, this);
+  },
+  
+  startMenu: function() {
+    game.state.start('menu');
+
   }
 };
