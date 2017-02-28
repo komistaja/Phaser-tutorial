@@ -1,13 +1,8 @@
-var playState = {
-  create: function() {
-    
-    // global variable to hold lvl number
-    game.global.lvlIndex = 0;
-    
-    // inputkeys for cursor/player
+var lvl1 = {
+  create: function () {
+    game.global.lvlIndex = 1;
     this.cursor = game.input.keyboard.createCursorKeys();
-
-    // create playersprite, bind physics, set anchorpoint and animation
+    
     this.player = game.add.sprite(340, game.world.centerY, 'player2');
     game.physics.arcade.enable(this.player);
     this.player.anchor.setTo(0.5, 0.5);
@@ -16,27 +11,20 @@ var playState = {
     this.player.animations.add('right', [1, 2], 8, true);
     this.player.animations.add('left', [3, 4], 8, true);
     
-    // create enemygroup
     this.enemies = game.add.group();
     this.enemies.enableBody = true;
     this.enemies.createMultiple(10, 'enemy');
-
-    // function to create world
+    
     this.createWorld();
     
-    // create coin sprite, bind physics
     this.coin = game.add.sprite(80, 120, 'coin');
     game.physics.arcade.enable(this.coin);
     this.coin.anchor.setTo(0.5, 0.5);
-
-    // add score label and set score variable to 0
-    this.scoreLabel = game.add.text(30, 30, 'Score: 0', { font: '16px Arial', fill: '#ffffff' });
-    game.global.score = 0;
     
-    // lvl score
+    this.scoreLabel = game.add.text(30, 30, 'Score: 0', { font: '16px Arial', fill: '#ffffff' });
+    
     this.lvlScore = 0;
     
-    //add enemies
     this.enemies = game.add.group();
     this.enemies.enableBody = true;
     game.physics.arcade.enable(this.enemies);
@@ -44,34 +32,27 @@ var playState = {
     
     this.nextEnemy = 0;
     
-    // load sfx
     jumpsfx = game.add.audio('jumpsfx');
     coinsfx = game.add.audio('coinsfx');
     deathsfx = game.add.audio('deadsfx');
     
-    //add emitter with 15 particles and set image to 'pixel', speeds to 150 and gravity 0
     this.emitter = game.add.emitter(0, 0, 15);
     this.emitter.makeParticles('pixel');
     this.emitter.setYSpeed(-150, 150);
     this.emitter.setXSpeed(-150, 150);
     this.emitter.gravity = 0;
-  },
     
-  update: function() {
-    // is valled 60 times per second
-    // contains logic
+    
+  },
+  update: function () {
     game.physics.arcade.collide(this.player, this.layer);
     game.physics.arcade.collide(this.enemies, this.layer);
-    
-    // function for player movement
     this.movePlayer();
     
-    // kill player if he is/falls outside world
     if(!this.player.inWorld) {
       this.playerDie();
     }
     
-    // add enemies using timer
     if(this.nextEnemy < game.time.now) {
       var start = 3000, end = 1000, score = 100;
       var delay = Math.max(start - (start-end)*game.global.score/score, end);
@@ -80,7 +61,6 @@ var playState = {
       this.nextEnemy = game.time.now + delay;
     }
     
-    // create sprite for levelteleport
     if(this.lvlScore > 4) {
       this.flag = game.add.sprite(340, game.world.centerY, 'coin');
       game.physics.arcade.enable(this.flag);
@@ -106,7 +86,6 @@ var playState = {
       this.player.body.velocity.y = -250;
       jumpsfx.play();
     }
-    
   },
   
   updateCoinPosition: function() {
@@ -138,8 +117,6 @@ var playState = {
     this.updateCoinPosition();
   },
   
-
-  
   addEnemy: function() {
     var enemy = this.enemies.getFirstDead();
     
@@ -158,7 +135,7 @@ var playState = {
   
   createWorld: function() {
     // create the tilemap
-    this.map = game.add.tilemap('map');
+    this.map = game.add.tilemap('map1');
     this.map.addTilesetImage('tileset');
     this.layer = this.map.createLayer('Tile Layer 1');
     this.layer.resizeWorld();
@@ -195,4 +172,4 @@ var playState = {
     var next = 'lvl' + lvlNumber;
     game.state.start(next);
   }
-};
+}
