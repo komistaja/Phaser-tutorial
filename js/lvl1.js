@@ -173,14 +173,14 @@ var lvl1 = {
     game.time.events.add(1000, this.startMenu, this);
   },
   
-  startMenu: function() {
-    game.state.start('menu');
-
-  },
-  
   nextLvl: function() {
     var lvlNumber = game.global.lvlIndex + 1;
     var next = 'lvl' + lvlNumber;
-    game.time.events.start(2000, game.state.start('menu'), this);
+    game.time.events.add(2000, this.startMenu, this);
+  },
+  
+  startMenu: function() {
+    game.state.start('menu');
+
   }
 }
