@@ -19,6 +19,8 @@ var loadState = {
     game.load.image('rightBtn', 'assets/rightButton.png');
     game.load.image('wallH', 'assets/wallHorizontal.png');
     game.load.image('wallV', 'assets/wallVertical.png');
+    game.load.spritesheet('finish', 'assets/finish.png', 30, 20);
+    game.load.spritesheet('enemy2', 'assets/enemy2.png', 20, 20);
     
     game.load.audio('coinsfx', 'assets/coin.mp3');
     game.load.audio('coinsfxogg', 'assets/coin.ogg');

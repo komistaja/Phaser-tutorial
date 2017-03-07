@@ -16,11 +16,8 @@ var playState = {
     this.player.animations.add('right', [1, 2], 8, true);
     this.player.animations.add('left', [3, 4], 8, true);
     
-    // create enemygroup
-    this.enemies = game.add.group();
-    this.enemies.enableBody = true;
-    this.enemies.createMultiple(10, 'enemy');
 
+    
     // function to create world
     this.createWorld();
     
@@ -40,7 +37,8 @@ var playState = {
     this.enemies = game.add.group();
     this.enemies.enableBody = true;
     game.physics.arcade.enable(this.enemies);
-    this.enemies.createMultiple(10, 'enemy');
+    this.enemies.createMultiple(10, 'enemy2');
+    
     
     this.nextEnemy = 0;
     
@@ -80,12 +78,8 @@ var playState = {
       this.nextEnemy = game.time.now + delay;
     }
     
-    // create sprite for levelteleport
-    if(this.lvlScore > 4) {
-      this.flag = game.add.sprite(340, game.world.centerY, 'coin');
-      game.physics.arcade.enable(this.flag);
-      this.flag.anchor.setTo(0.5, 0.5);
-    }
+
+    
     
     game.physics.arcade.overlap(this.coin, this.player, this.takeCoin, null, this);
     game.physics.arcade.overlap(this.player, this.enemies, this.playerDie, null, this);
@@ -136,6 +130,9 @@ var playState = {
     this.scoreLabel.text = 'Score: ' + game.global.score;
     coinsfx.play();
     this.updateCoinPosition();
+    
+    // create sprite for levelteleport
+    this.lvlPortal();
   },
   
 
@@ -154,6 +151,9 @@ var playState = {
     enemy.body.bounce.x = 1;
     enemy.checkWorldBounds = true;
     enemy.outOfBoundsKill = true;
+    enemy.animations.add('walk', [0, 1, 2, 3], 5, true);
+    enemy.animations.enableUpdate = true;
+    enemy.animations.play('walk', 5, true);
   },
   
   createWorld: function() {
@@ -163,6 +163,7 @@ var playState = {
     this.layer = this.map.createLayer('Tile Layer 1');
     this.layer.resizeWorld();
     this.map.setCollision(1);
+    this.map.setCollision(2);
   },
   
   playerDie: function() {
@@ -183,6 +184,18 @@ var playState = {
     
 
     game.time.events.add(1000, this.startMenu, this);
+  },
+  
+  lvlPortal: function() {
+    if(this.lvlScore > 4) {
+      this.flag = game.add.sprite(game.world.centerX, 270, 'finish');
+      this.flag.animations.add('wave', [0, 1], 3, true);
+      this.flag.animations.enableUpdate = true;
+      this.flag.anchor.setTo(0.5, 0.5);
+      game.add.tween(this.flag.scale).to({x: 2, y: 2}, 50).to({x: 1, y: 1}, 200).start();
+      game.physics.arcade.enable(this.flag);
+      this.flag.animations.play('wave', 3, true);
+    }
   },
   
   startMenu: function() {
