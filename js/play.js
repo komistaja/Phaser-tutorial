@@ -30,7 +30,7 @@ var playState = {
     game.physics.arcade.enable(this.coin);
     this.coin.anchor.setTo(0.5, 0.5);
 
-    // add score label and set score variable to 0
+    // add score and lives label and set score variable to 0
     this.scoreLabel = game.add.text(30, 30, 'Score: 0', { font: '16px Arial', fill: '#ffffff' });
     this.livesLabel = game.add.text(410, 30, 'Lives: ' + this.lives, { font: '16px Arial', fill: '#ffffff' });
     game.global.score = 0;
@@ -202,9 +202,7 @@ var playState = {
     }
     this.livesLabel.text = 'Lives: ' + this.lives;
   },
-  
-
-  
+    
   lvlPortal: function() {
     if(this.lvlScore > 4) {
       this.flag = game.add.sprite(game.world.centerX, 270, 'finish');

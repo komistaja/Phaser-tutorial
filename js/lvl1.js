@@ -187,14 +187,14 @@ var lvl1 = {
     this.livesLabel.text = 'Lives: ' + this.lives;
   },
   
-  nextLvl: function() {
-    var lvlNumber = game.global.lvlIndex + 1;
-    var next = 'lvl' + lvlNumber;
-    game.time.events.add(2000, this.startMenu, this);
-  },
-  
   startMenu: function() {
     game.state.start('menu');
 
-  }
+  },
+  
+  nextLvl: function() {
+    var lvlNumber = game.global.lvlIndex + 1;
+    var next = 'lvl' + lvlNumber;
+    this.startMenu();
+  },
 }
