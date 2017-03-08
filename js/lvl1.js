@@ -1,6 +1,10 @@
 var lvl1 = {
   create: function () {
     game.global.lvlIndex = 1;
+    this.nextEnemy = 0;
+    this.lvlScore = 0;
+    this.lives = 3;
+
     this.cursor = game.input.keyboard.createCursorKeys();
     
     this.player = game.add.sprite(340, game.world.centerY, 'player2');
@@ -22,15 +26,13 @@ var lvl1 = {
     this.coin.anchor.setTo(0.5, 0.5);
     
     this.scoreLabel = game.add.text(30, 30, 'Score: ' + game.global.score, { font: '16px Arial', fill: '#ffffff' });
-    
-    this.lvlScore = 0;
-    
+    this.livesLabel = game.add.text(410, 30, 'Lives: ' + this.lives, { font: '16px Arial', fill: '#ffffff' });
+      
     this.enemies = game.add.group();
     this.enemies.enableBody = true;
     game.physics.arcade.enable(this.enemies);
     this.enemies.createMultiple(10, 'enemy2');
     
-    this.nextEnemy = 0;
     
     jumpsfx = game.add.audio('jumpsfx');
     coinsfx = game.add.audio('coinsfx');
@@ -153,6 +155,10 @@ var lvl1 = {
     this.map.setCollision(2);
   },
   
+  playerResurrect: function() {
+    this.player.reset(350, game.world.centerY);
+  },
+  
   playerDie: function() {
     if(!this.player.alive) {
       return;
@@ -169,8 +175,16 @@ var lvl1 = {
     this.emitter.y = this.player.y;
     this.emitter.start(true, 600, null, 15);
     
+    if(this.lives >= 1) {
+      this.lives = this.lives - 1;
+      game.time.events.add(1000, this.playerResurrect, this);
 
-    game.time.events.add(1000, this.startMenu, this);
+    }
+    
+    if(this.lives < 1) {
+      game.time.events.add(1000, this.startMenu, this);
+    }
+    this.livesLabel.text = 'Lives: ' + this.lives;
   },
   
   nextLvl: function() {

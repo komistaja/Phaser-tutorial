@@ -4,11 +4,15 @@ var playState = {
     // global variable to hold lvl number
     game.global.lvlIndex = 0;
     
+    // lvl score&lives
+    this.lvlScore = 0;
+    this.lives = 3;
+    
     // inputkeys for cursor/player
     this.cursor = game.input.keyboard.createCursorKeys();
 
     // create playersprite, bind physics, set anchorpoint and animation
-    this.player = game.add.sprite(340, game.world.centerY, 'player2');
+    this.player = game.add.sprite(350, game.world.centerY, 'player2');
     game.physics.arcade.enable(this.player);
     this.player.anchor.setTo(0.5, 0.5);
     this.player.body.gravity.y = 270;
@@ -28,10 +32,11 @@ var playState = {
 
     // add score label and set score variable to 0
     this.scoreLabel = game.add.text(30, 30, 'Score: 0', { font: '16px Arial', fill: '#ffffff' });
+    this.livesLabel = game.add.text(410, 30, 'Lives: ' + this.lives, { font: '16px Arial', fill: '#ffffff' });
     game.global.score = 0;
     
-    // lvl score
-    this.lvlScore = 0;
+
+
     
     //add enemies
     this.enemies = game.add.group();
@@ -166,6 +171,10 @@ var playState = {
     this.map.setCollision(2);
   },
   
+  playerResurrect: function() {
+    this.player.reset(350, game.world.centerY);
+  },
+  
   playerDie: function() {
     if(!this.player.alive) {
       return;
@@ -182,9 +191,19 @@ var playState = {
     this.emitter.y = this.player.y;
     this.emitter.start(true, 600, null, 15);
     
+    if(this.lives >= 1) {
+      this.lives = this.lives - 1;
+      game.time.events.add(1000, this.playerResurrect, this);
 
-    game.time.events.add(1000, this.startMenu, this);
+    }
+    
+    if(this.lives < 1) {
+      game.time.events.add(1000, this.startMenu, this);
+    }
+    this.livesLabel.text = 'Lives: ' + this.lives;
   },
+  
+
   
   lvlPortal: function() {
     if(this.lvlScore > 4) {
