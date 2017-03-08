@@ -182,7 +182,12 @@ var lvl1 = {
     }
     
     if(this.lives < 1) {
-      game.time.events.add(1000, this.startMenu, this);
+      this.gameOver = game.add.text(game.world.centerX, game.world.centerY, 'GAME OVER', { font: '32px Arial', fill: '#ffffff' });
+      this.gameOver.anchor.setTo(0.5, 0.5);
+      game.add.tween(this.gameOver.scale).to({ x: 2, y: 2}, 500).to({ x: 1.5, y: 1.5 }, 500).start();
+      this.endScore = game.add.text(game.world.centerX, 280, 'Score: ' + game.global.score, { font: '32px Arial', fill: '#ffffff' });
+      this.endScore.anchor.setTo(0.5, 0.5);
+      game.time.events.add(3000, this.startMenu, this);
     }
     this.livesLabel.text = 'Lives: ' + this.lives;
   },
