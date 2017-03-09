@@ -21,7 +21,7 @@ var lvl1 = {
     
     this.createWorld();
     
-    this.coin = game.add.sprite(80, 120, 'coin');
+    this.coin = game.add.sprite(60, 140, 'coin');
     game.physics.arcade.enable(this.coin);
     this.coin.anchor.setTo(0.5, 0.5);
     
@@ -156,7 +156,9 @@ var lvl1 = {
   },
   
   playerResurrect: function() {
-    this.player.reset(350, game.world.centerY);
+    if(this.lives > 0) {
+      this.player.reset(350, game.world.centerY);
+    }
   },
   
   playerDie: function() {
@@ -182,14 +184,18 @@ var lvl1 = {
     }
     
     if(this.lives < 1) {
-      this.gameOver = game.add.text(game.world.centerX, game.world.centerY, 'GAME OVER', { font: '32px Arial', fill: '#ffffff' });
-      this.gameOver.anchor.setTo(0.5, 0.5);
-      game.add.tween(this.gameOver.scale).to({ x: 2, y: 2}, 500).to({ x: 1.5, y: 1.5 }, 500).start();
-      this.endScore = game.add.text(game.world.centerX, 280, 'Score: ' + game.global.score, { font: '32px Arial', fill: '#ffffff' });
-      this.endScore.anchor.setTo(0.5, 0.5);
-      game.time.events.add(3000, this.startMenu, this);
+      this.gameOver();
     }
     this.livesLabel.text = 'Lives: ' + this.lives;
+  },
+  
+  gameOver: function() {
+    this.gameOverText = game.add.text(game.world.centerX, game.world.centerY, 'GAME OVER', { font: '32px Arial', fill: '#ffffff' });
+    this.gameOverText.anchor.setTo(0.5, 0.5);
+    game.add.tween(this.gameOverText.scale).to({ x: 2, y: 2}, 500).to({ x: 1.5, y: 1.5 }, 500).start();
+    this.endScore = game.add.text(game.world.centerX, 280, 'Score: ' + game.global.score, { font: '32px Arial', fill: '#ffffff' });
+    this.endScore.anchor.setTo(0.5, 0.5);
+    game.time.events.add(3000, this.startMenu, this);
   },
   
   startMenu: function() {
