@@ -5,7 +5,7 @@ var playState = {
     game.global.lvlIndex = 0;
     
     //add mobileinputs
-    if(!game.device.android) {
+    if(!game.device.desktop) {
       this.addMobileInputs();
     }
     

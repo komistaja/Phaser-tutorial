@@ -7,7 +7,8 @@ var bootState = {
     game.stage.backgroundColor = '#3498dB';
     game.physics.startSystem(Phaser.Physics.ARCADE);
     
-    if(!game.device.android) {
+    if(!game.device.desktop) {
+
       game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
       
       document.body.style.backgroundColor = '#3498db';
@@ -19,6 +20,8 @@ var bootState = {
       
       game.scale.pageAlignHorizontally = true;
       game.scale.pageAlignVertically = true;
+      
+      game.scale.refresh();
       
     }
     game.state.start('load');

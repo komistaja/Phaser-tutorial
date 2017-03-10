@@ -4,7 +4,7 @@ var lvl1 = {
     this.nextEnemy = 0;
     this.lvlScore = 0;
     this.lives = 3;
-    if(!game.device.android) {
+    if(!game.device.desktop) {
       this.addMobileInputs();
     }
 
