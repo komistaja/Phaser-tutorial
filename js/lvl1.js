@@ -4,6 +4,9 @@ var lvl1 = {
     this.nextEnemy = 0;
     this.lvlScore = 0;
     this.lives = 3;
+    if(!game.device.android) {
+      this.addMobileInputs();
+    }
 
     this.cursor = game.input.keyboard.createCursorKeys();
     
@@ -69,18 +72,18 @@ var lvl1 = {
   },
   
   movePlayer: function() {
-    if(this.cursor.left.isDown) {
+    if(this.cursor.left.isDown || this.moveLeft) {
       this.player.body.velocity.x = -200;
       this.player.animations.play('left');
-    } else if(this.cursor.right.isDown) {
+    } else if(this.cursor.right.isDown || this.moveRight) {
       this.player.body.velocity.x = 200;
       this.player.animations.play('right');
     } else {
       this.player.body.velocity.x = 0;
+      this.player.animations.stop();
     }
     if(this.cursor.up.isDown && this.player.body.onFloor()) {
-      this.player.body.velocity.y = -250;
-      jumpsfx.play();
+      this.jumpPlayer();
     }
   },
   
@@ -208,4 +211,39 @@ var lvl1 = {
     var next = 'lvl' + lvlNumber;
     this.startMenu();
   },
+  
+  addMobileInputs: function() {
+    this.jumpBtn = game.add.sprite(350, 247, 'jumpBtn');
+    this.jumpBtn.inputEnabled = true;
+    this.jumpBtn.alpha = 0.5;
+    this.jumpBtn.events.onInputDown.add(this.jumpPlayer, this);
+    
+    this.moveLeft = false;
+    this.moveRight = false;
+    
+    this.leftBtn = game.add.sprite(50, 247, 'leftBtn');
+    this.leftBtn.inputEnabled = true;
+    this.leftBtn.alpha = 0.5;
+    this.leftBtn.events.onInputOver.add(function() { this.moveLeft = true; }, this);
+    this.leftBtn.events.onInputOut.add(function() { this.moveLeft = false; }, this);
+    this.leftBtn.events.onInputDown.add(function() { this.moveLeft = true; }, this);
+    this.leftBtn.events.onInputUp.add(function() { this.moveLeft = false; }, this);
+
+    
+    this.rightBtn = game.add.sprite(130, 247, 'rightBtn');
+    this.rightBtn.inputEnabled = true;
+    this.rightBtn.alpha = 0.5;
+    this.rightBtn.events.onInputOver.add(function() { this.moveRight = true; }, this);
+    this.rightBtn.events.onInputOut.add(function() { this.moveRight = false; }, this);
+    this.rightBtn.events.onInputDown.add(function() { this.moveRight = true; }, this);
+    this.rightBtn.events.onInputUp.add(function() { this.moveRight = false; }, this);
+
+  },
+  
+  jumpPlayer: function() {
+    if(this.player.body.onFloor()) {
+      this.player.body.velocity.y = -250;
+      jumpsfx.play();
+    }
+  }
 }
