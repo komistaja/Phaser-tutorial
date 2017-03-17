@@ -2,7 +2,7 @@ var playState = {
   create: function() {
     
     // global variable to hold lvl number
-    game.global.lvlIndex = 0;
+    //game.global.lvlIndex = 0;
     
     //add mobileinputs
     if(!game.device.desktop) {
@@ -10,7 +10,11 @@ var playState = {
     }
     
     // lvl score&lives
-    this.lvlScore = 0;
+    if(game.global.devmode) {
+      this.lvlScore = 4;
+    } else {
+      this.lvlScore = 0;
+    }
     this.lives = 3;
     
     // inputkeys for cursor/player
@@ -36,9 +40,9 @@ var playState = {
     this.coin.anchor.setTo(0.5, 0.5);
 
     // add score and lives label and set score variable to 0
-    this.scoreLabel = game.add.text(30, 30, 'Score: 0', { font: '16px Arial', fill: '#ffffff' });
+    this.scoreLabel = game.add.text(30, 30, 'Score: ' + game.global.score, { font: '16px Arial', fill: '#ffffff' });
     this.livesLabel = game.add.text(410, 30, 'Lives: ' + this.lives, { font: '16px Arial', fill: '#ffffff' });
-    game.global.score = 0;
+
     
 
 
@@ -169,12 +173,13 @@ var playState = {
   
   createWorld: function() {
     // create the tilemap
+    var layerNumber = 'Tile Layer ' + game.global.lvlIndex; 
     this.map = game.add.tilemap('map');
     this.map.addTilesetImage('tileset');
-    this.layer = this.map.createLayer('Tile Layer 1');
+    this.layer = this.map.createLayer(layerNumber);
     this.layer.resizeWorld();
-    this.map.setCollision(1);
-    this.map.setCollision(2);
+    this.map.setCollision([1, 2], true, layerNumber);
+
   },
   
   playerResurrect: function() {
@@ -216,7 +221,7 @@ var playState = {
     game.add.tween(this.gameOverText.scale).to({ x: 2, y: 2}, 500).to({ x: 1.5, y: 1.5 }, 500).start();
     this.endScore = game.add.text(game.world.centerX, 280, 'Score: ' + game.global.score, { font: '32px Arial', fill: '#ffffff' });
     this.endScore.anchor.setTo(0.5, 0.5);
-    game.time.events.add(3000, this.startMenu, this);
+    game.time.events.add(3000, this.toGameOver, this);
 },
     
   lvlPortal: function() {
@@ -236,10 +241,17 @@ var playState = {
 
   },
   
+  toGameOver: function() {
+    game.state.start('gameOver');
+  },
+  
   nextLvl: function() {
-    var lvlNumber = game.global.lvlIndex + 1;
-    var next = 'lvl' + lvlNumber;
-    game.state.start(next);
+    if(game.global.lvlIndex == 4) {
+      game.state.start('menu');
+    } else {
+      game.global.lvlIndex += 1;
+      game.state.start('play');
+    }
   },
   
   addMobileInputs: function() {

@@ -150,12 +150,11 @@ var lvl1 = {
   
   createWorld: function() {
     // create the tilemap
-    this.map = game.add.tilemap('map1');
+    this.map = game.add.tilemap('map');
     this.map.addTilesetImage('tileset');
-    this.layer = this.map.createLayer('Tile Layer 1');
+    this.layer = this.map.createLayer('Tile Layer 2');
     this.layer.resizeWorld();
-    this.map.setCollision(1);
-    this.map.setCollision(2);
+    this.map.setCollision([1, 2], true, 'Tile Layer 2');
   },
   
   playerResurrect: function() {
