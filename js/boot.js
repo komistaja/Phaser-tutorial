@@ -4,7 +4,7 @@ var bootState = {
   },
   
   create: function() {
-    game.global.devmode = true;
+    game.global.devmode = false;
     game.stage.backgroundColor = '#3498dB';
     game.physics.startSystem(Phaser.Physics.ARCADE);
     
