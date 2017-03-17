@@ -1,6 +1,8 @@
 var playState = {
   create: function() {
     
+    game.plugins.cameraShake = game.plugins.add(Phaser.Plugin.CameraShake);
+    
     // global variable to hold lvl number
     //game.global.lvlIndex = 0;
     
@@ -221,6 +223,7 @@ var playState = {
     game.add.tween(this.gameOverText.scale).to({ x: 2, y: 2}, 500).to({ x: 1.5, y: 1.5 }, 500).start();
     this.endScore = game.add.text(game.world.centerX, 280, 'Score: ' + game.global.score, { font: '32px Arial', fill: '#ffffff' });
     this.endScore.anchor.setTo(0.5, 0.5);
+    game.plugins.cameraShake.shake();
     game.time.events.add(3000, this.toGameOver, this);
 },
     
