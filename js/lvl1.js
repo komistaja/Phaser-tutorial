@@ -117,7 +117,7 @@ var lvl1 = {
     this.lvlPortal();
   },
   
-    lvlPortal: function() {
+  lvlPortal: function() {
     if(this.lvlScore > 4) {
       this.flag = game.add.sprite(game.world.centerX, 270, 'finish');
       this.flag.animations.add('wave', [0, 1], 3, true);

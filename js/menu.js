@@ -18,7 +18,7 @@ var menuState = {
     var highScore = game.add.text(game.world.centerX, game.world.height-140, 'highscore ' + localStorage.getItem('highscore'), { font: '25px Comic Sans', fill: '#ffffff' });
     highScore.anchor.setTo(0.5, 0.5);
     
-    if(game.device.android) {
+    if(game.device.desktop) {
       startText = 'press the up-key to start';
     } else {
       startText = 'touch screen to start';
@@ -26,6 +26,8 @@ var menuState = {
     
     var startLabel = game.add.text(game.world.centerX, game.world.height-80, startText, { font: '25px Sans Comic', fill: '#ffffff' });
     startLabel.anchor.setTo(0.5, 0.5);
+    
+    game.add.tween(startLabel.scale).to({x: 1.1, y: 1.1}, 300).to({x: 1, y: 1}, 300).loop().start();
     
     this.muteBtn = game.add.button(20, 20, 'muteBtn', this.toggleSound, this);
     this.muteBtn.input.useHandCursor = true;
