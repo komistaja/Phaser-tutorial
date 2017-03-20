@@ -11,6 +11,9 @@ var playState = {
       this.addMobileInputs();
     }
     
+    this.lifeUpTimer = game.math.between(6000, 30000);
+
+    
     // lvl score&lives
     if(game.global.devmode) {
       this.lvlScore = 4;
@@ -94,12 +97,22 @@ var playState = {
       this.nextEnemy = game.time.now + delay;
     }
     
+    //lifeup timer
+
+    if(this.lifeUpTimer < game.time.now) {
+      var delay = game.math.between(6000, 30000);
+      
+      this.addLifeUp();
+      this.lifeUpTimer = game.time.now + delay;
+    }
+    
 
     
     
     game.physics.arcade.overlap(this.coin, this.player, this.takeCoin, null, this);
     game.physics.arcade.overlap(this.player, this.enemies, this.playerDie, null, this);
     game.physics.arcade.overlap(this.flag, this.player, this.nextLvl, null, this);
+    game.physics.arcade.overlap(this.lifeCoin, this.player, this.takeLifeUp, null, this);
     
   },
   
@@ -118,6 +131,20 @@ var playState = {
       this.jumpPlayer();
     }
     
+  },
+  
+  addLifeUp: function () {
+    if(this.lifeCoin == undefined || !this.lifeCoin.alive) {
+      this.lifeCoin = game.add.sprite(game.world.centerX, 220, 'coin');
+      this.lifeCoin.anchor.setTo(0.5, 0.5);
+      game.physics.arcade.enable(this.lifeCoin);
+    }
+  },
+  
+  takeLifeUp: function() {
+    this.lives += 1;
+    this.lifeCoin.kill();
+    this.livesLabel.text = 'Lives: ' + this.lives;
   },
   
   updateCoinPosition: function() {
