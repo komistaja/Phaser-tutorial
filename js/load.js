@@ -8,6 +8,7 @@ var loadState = {
     game.load.setPreloadSprite(progressBar);
     
     game.load.image('coin', 'assets/coin.png');
+    game.load.image('lifeCoin', 'assets/lifecoin.png');
     game.load.image('enemy', 'assets/enemy.png');
     game.load.image('bg', 'assets/background.png');
     game.load.image('jumpBtn', 'assets/jumpButton.png');

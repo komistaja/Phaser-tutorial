@@ -135,7 +135,7 @@ var playState = {
   
   addLifeUp: function () {
     if(this.lifeCoin == undefined || !this.lifeCoin.alive) {
-      this.lifeCoin = game.add.sprite(game.world.centerX, 220, 'coin');
+      this.lifeCoin = game.add.sprite(game.world.centerX, 220, 'lifeCoin');
       this.lifeCoin.anchor.setTo(0.5, 0.5);
       game.physics.arcade.enable(this.lifeCoin);
     }
