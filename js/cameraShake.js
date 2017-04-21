@@ -73,7 +73,7 @@ Phaser.Plugin.CameraShake = function(game, parent) {
 
     shake_timer.start();
 
-    console.log(this._settings.shakeCount);
+    //console.log(this._settings.shakeCount);
   };
 };
 
@@ -81,12 +81,7 @@ Phaser.Plugin.CameraShake.prototype = Object.create(Phaser.Plugin.prototype);
 Phaser.Plugin.CameraShake.prototype.constructor = Phaser.Plugin.CameraShake;
 
 
-/**
- * Change default settings object values with passed object value.
- *
- * @method Phaser.Plugin.CameraShake#setup
- * @param {object} [obj] - Passed object to merge
- */
+
 Phaser.Plugin.CameraShake.prototype.setup = function (obj) {
   this._settings = Phaser.Utils.extend(false, this._settings, obj);
 };

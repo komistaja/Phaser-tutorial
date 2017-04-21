@@ -44,6 +44,7 @@ var menuState = {
   },
   
   start: function() {
+    game.global.score = 0;
     game.state.start('play');
   },
   

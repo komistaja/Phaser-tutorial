@@ -1,11 +1,11 @@
 var playState = {
   create: function() {
     
+    game.add.image(0, 0, 'bg');
+    
     game.plugins.cameraShake = game.plugins.add(Phaser.Plugin.CameraShake);
     
-    // global variable to hold lvl number
-    //game.global.lvlIndex = 0;
-    
+   
     //add mobileinputs
     if(!game.device.desktop) {
       this.addMobileInputs();
@@ -20,7 +20,9 @@ var playState = {
     } else {
       this.lvlScore = 0;
     }
-    this.lives = 3;
+    if(!game.global.lives) {
+      this.lives = 3;
+    }
     
     // inputkeys for cursor/player
     this.cursor = game.input.keyboard.createCursorKeys();
@@ -280,6 +282,7 @@ var playState = {
       game.state.start('menu');
     } else {
       game.global.lvlIndex += 1;
+      game.global.lives = this.lives;
       game.state.start('play');
     }
   },
